@@ -9,6 +9,7 @@ import {
 
 import { Container } from '../../styles/GlobalStyles';
 import axios from '../../services/axios';
+import history from '../../services/history';
 import { TextContainer, AlunoContainer, ProfilePicture } from './styled';
 import { Link } from 'react-router-dom';
 import Loading from '../../components/Loading';
@@ -20,14 +21,42 @@ export default function Alunos() {
 
     React.useEffect(() => {
         async function getData() {
-            setIsLoading(true);
-            const response = await axios.get('/alunos');
-            setAlunos(response.data);
-            setIsLoading(false);
+            try {
+                setIsLoading(true);
+                const response = await axios.get('/alunos');
+                setAlunos(response.data);
+                setIsLoading(false);
+            } catch (err) {
+                const status = get(err, 'response.status', 0);
+                if (status === 401) {
+                    toast.error('Você precisa fazer login.');
+                    history.push('/login');
+                }
+            }
         }
 
         getData();
     }, []);
+
+    const handleInput = async (e) => {
+        const Input = e.target;
+        console.log(Input.value);
+        try {
+            setIsLoading(true);
+            const response = await axios.post('/alunos/pesquisa', {
+                pesquisa: Input.value,
+            });
+            console.log(response);
+            setAlunos(response.data);
+            setIsLoading(false);
+        } catch (err) {
+            const status = get(err, 'response.status', 0);
+            if (status === 401) {
+                toast.error('Você precisa fazer login.');
+                history.push('/login');
+            }
+        }
+    };
 
     const handleDeleteAsk = (e) => {
         e.preventDefault();
@@ -59,7 +88,10 @@ export default function Alunos() {
 
             <TextContainer className="text-container">
                 <h1>Alunos</h1>
-                <Link to={'/aluno'}>Adicionar Aluno</Link>
+                <div className="rightContainer">
+                    <input type="text" onChange={handleInput} />
+                    <Link to={'/aluno'}>Adicionar Aluno</Link>
+                </div>
             </TextContainer>
             <AlunoContainer>
                 {alunos.map((aluno, index) => (
@@ -75,22 +107,24 @@ export default function Alunos() {
                         <span>{aluno.nome}</span>
                         <span>{aluno.email}</span>
 
-                        <Link to={`/aluno/${aluno.id}/edit`}>
-                            <FaEdit />
-                        </Link>
-
-                        <Link
-                            onClick={handleDeleteAsk}
-                            to={`/aluno/${aluno.id}/delete`}
-                        >
-                            <FaWindowClose />
-                        </Link>
-
-                        <FaExclamation
-                            onClick={(e) => handleDelete(e, aluno.id, index)}
-                            display={'none'}
-                            cursor={'pointer'}
-                        />
+                        <div className="linkContainer">
+                            <Link to={`/aluno/${aluno.id}/edit`}>
+                                <FaEdit />
+                            </Link>
+                            <Link
+                                onClick={handleDeleteAsk}
+                                to={`/aluno/${aluno.id}/delete`}
+                            >
+                                <FaWindowClose />
+                            </Link>
+                            <FaExclamation
+                                onClick={(e) =>
+                                    handleDelete(e, aluno.id, index)
+                                }
+                                display={'none'}
+                                cursor={'pointer'}
+                            />
+                        </div>
                     </div>
                 ))}
             </AlunoContainer>
