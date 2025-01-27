@@ -40,7 +40,6 @@ export default function Alunos() {
 
     const handleInput = async (e) => {
         const Input = e.target;
-        console.log(Input.value);
         try {
             setIsLoading(true);
             const response = await axios.post('/alunos/pesquisa', {
