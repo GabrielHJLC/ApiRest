@@ -34,8 +34,12 @@ export const AlunoContainer = styled.div`
         margin-left: 10px;
     }
 
-    div + div{
+    .aluno + .aluno{
         border-top: 2px solid #eee;
+    }
+
+    .fullname{
+        gap: 10px;
     }
 `;
 

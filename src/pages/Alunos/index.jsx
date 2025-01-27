@@ -95,7 +95,7 @@ export default function Alunos() {
             </TextContainer>
             <AlunoContainer>
                 {alunos.map((aluno, index) => (
-                    <div key={String(aluno.id)}>
+                    <div className="aluno" key={String(aluno.id)}>
                         <ProfilePicture>
                             {get(aluno, 'fotos[0].url', false) ? (
                                 <img src={aluno.fotos[0].url} alt="" />
@@ -104,7 +104,10 @@ export default function Alunos() {
                             )}
                         </ProfilePicture>
 
-                        <span>{aluno.nome}</span>
+                        <div className="fullname">
+                            <span>{aluno.nome}</span>
+                            <span>{aluno.sobrenome}</span>
+                        </div>
                         <span>{aluno.email}</span>
 
                         <div className="linkContainer">
