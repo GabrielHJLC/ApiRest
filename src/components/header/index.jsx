@@ -62,6 +62,7 @@ export default function Header() {
 
             <div className="center-Content">
                 <Link to="/">Home</Link>
+                <Link to="/about">About</Link>
             </div>
 
             {isLoggedIn ? (
